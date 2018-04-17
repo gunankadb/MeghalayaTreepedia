@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
                 //nextLine[] is an array of values from the line
                 if (trees_index > 0) {
                     tree_names[trees_index - 1] = nextLine[1];
-                    tree_names_for_search[trees_index - 1] = nextLine[1] + ", " + nextLine[2];
+                    tree_names_for_search[trees_index - 1] = nextLine[1] + ", " + nextLine[2] + ", " + nextLine[3];
                     //trees_temp[trees_index - 1] = nextLine;
                     System.arraycopy(nextLine, 0 , trees_temp[trees_index - 1], 0,TREE_FIELDS_COUNT );
                     trees_hash.put(tree_names[trees_index - 1], trees_temp[trees_index - 1]);
@@ -128,8 +128,12 @@ public class MainActivity extends AppCompatActivity
                     String mytree = (String ) getItem(position);
                     String[] mytree_array = new String[2] ;
                     mytree_array = mytree.split(",") ;
-                    tv1.setText(trees_hash.get(mytree_array[0])[1]);
-                    tv2.setText(trees_hash.get(mytree_array[0])[2]);
+                    if (trees_hash.get(mytree_array[0])[2].equals("NA")) {
+                        tv1.setText(trees_hash.get(mytree_array[0])[1]);
+                    }else {
+                        tv1.setText(trees_hash.get(mytree_array[0])[1] + " or " + trees_hash.get(mytree_array[0])[2]);
+                    }
+                    tv2.setText(trees_hash.get(mytree_array[0])[3]);
                     tv1.setTextColor(Color.parseColor(TEXT_FONT_COLOR));
                     tv2.setTextColor(Color.BLACK);
 

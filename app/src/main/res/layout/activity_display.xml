@@ -6,23 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".DisplayActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scrollbars="vertical" />
+
     <ListView
         android:id="@+id/lv_display"
         android:layout_width="wrap_content"
-        android:layout_height="321dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewId" />
-
-    <ImageView
-        android:id="@+id/imageViewId"
-        android:layout_width="370dp"
-        android:layout_height="192dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view" />
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imageViewId"-->
+    <!--android:layout_width="370dp"-->
+    <!--android:layout_height="192dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintHorizontal_bias="0.0"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
 </android.support.constraint.ConstraintLayout>

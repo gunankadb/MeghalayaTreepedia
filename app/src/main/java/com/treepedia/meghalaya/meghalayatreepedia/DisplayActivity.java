@@ -86,7 +86,7 @@ public class DisplayActivity extends AppCompatActivity {
 //            mImageView = (ImageView) findViewById(R.id.imageViewId);
 //            final String imageID = "i"+ (String)selected_tree.toArray()[0] ;
 //            mImageView.setImageResource(getResources().getIdentifier(imageID, "drawable", getPackageName()));
-            fetchImages((String)selected_tree.toArray()[0]);
+            fetchImages((String)selected_tree.toArray()[0], (String)selected_tree.toArray()[1], (String)selected_tree.toArray()[2], (String)selected_tree.toArray()[3] );
             final String[] headings = TREE_FIELDS ;
             //headings[TREE_FIELDS_COUNT];
             try{
@@ -147,7 +147,7 @@ public class DisplayActivity extends AppCompatActivity {
 
     }
 
-    private void fetchImages(final String ImageID) {
+    private void fetchImages(final String ImageID, final String BN,final String Synonym, final String CN ) {
         final String endpoint = TREE_JSON_FILE_NAME;
 
         pDialog.setMessage("Downloading images...");
@@ -166,13 +166,17 @@ public class DisplayActivity extends AppCompatActivity {
                             try {
                                 JSONObject object = response.getJSONObject(i);
                                 Image image = new Image();
-                                image.setName(ImageID);
+                                if (Synonym.equals("NA")) {
+                                    image.setName(BN);
+                                }else{
+                                    image.setName(BN + " or " + Synonym);
+                                }
 
                                 JSONObject url = object.getJSONObject("url");
                                 image.setSmall(Imageurl);
                                 image.setMedium(Imageurl);
                                 image.setLarge(Imageurl);
-                                image.setTimestamp(TIMESTAMP);
+                                image.setTimestamp(CN);
 
                                 images.add(image);
 

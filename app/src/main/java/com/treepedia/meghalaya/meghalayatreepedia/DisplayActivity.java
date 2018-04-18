@@ -45,8 +45,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-//import com.google.firebase.storage.FirebaseStorage;
-//import com.google.firebase.storage.StorageReference;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.treepedia.meghalaya.meghalayatreepedia.R;
 import com.treepedia.meghalaya.meghalayatreepedia.GalleryAdapter;
 import com.treepedia.meghalaya.meghalayatreepedia.AppController;
@@ -59,7 +60,7 @@ public class DisplayActivity extends AppCompatActivity {
     private ProgressDialog pDialog;
     private GalleryAdapter mAdapter;
     private RecyclerView recyclerView;
-//    private StorageReference mStorageRef;
+    private StorageReference mStorageRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class DisplayActivity extends AppCompatActivity {
         pDialog = new ProgressDialog(this);
         images = new ArrayList<>();
         mAdapter = new GalleryAdapter(getApplicationContext(), images);
-
+        String firebase_access_token = FirebaseInstanceId.getInstance().getToken();
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -86,7 +87,7 @@ public class DisplayActivity extends AppCompatActivity {
 //            mImageView = (ImageView) findViewById(R.id.imageViewId);
 //            final String imageID = "i"+ (String)selected_tree.toArray()[0] ;
 //            mImageView.setImageResource(getResources().getIdentifier(imageID, "drawable", getPackageName()));
-            fetchImages((String)selected_tree.toArray()[0], (String)selected_tree.toArray()[1], (String)selected_tree.toArray()[2], (String)selected_tree.toArray()[3] );
+            fetchImages((String)selected_tree.toArray()[0], (String)selected_tree.toArray()[1], (String)selected_tree.toArray()[2], (String)selected_tree.toArray()[3], firebase_access_token );
             final String[] headings = TREE_FIELDS ;
             //headings[TREE_FIELDS_COUNT];
             try{
@@ -147,8 +148,8 @@ public class DisplayActivity extends AppCompatActivity {
 
     }
 
-    private void fetchImages(final String ImageID, final String BN,final String Synonym, final String CN ) {
-        final String endpoint = TREE_JSON_FILE_NAME;
+    private void fetchImages(final String ImageID, final String BN,final String Synonym, final String CN, final String firebase_access_token ) {
+        final String endpoint = TREE_JSON_FILE_NAME + firebase_access_token;
 
         pDialog.setMessage("Downloading images...");
         pDialog.show();
@@ -162,7 +163,7 @@ public class DisplayActivity extends AppCompatActivity {
 
                         images.clear();
                         for (int i = 0; i < IMAGES_COUNT[Integer.parseInt(ImageID)-1]; i++) {
-                            final String Imageurl = TREE_IMAGES_URL[0]+ImageID+TREE_IMAGES_URL[1]+"i"+(i+1)+TREE_IMAGES_URL[2] ;
+                            final String Imageurl = TREE_IMAGES_URL[0]+ImageID+TREE_IMAGES_URL[1]+"i"+(i+1)+TREE_IMAGES_URL[2] + firebase_access_token ;
                             try {
                                 JSONObject object = response.getJSONObject(i);
                                 Image image = new Image();

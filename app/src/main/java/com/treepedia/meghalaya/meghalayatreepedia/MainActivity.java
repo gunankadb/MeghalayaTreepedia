@@ -2,6 +2,8 @@ package com.treepedia.meghalaya.meghalayatreepedia;
 
 //import android.Manifest;
 //import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
@@ -11,8 +13,10 @@ import android.os.Bundle;
 //import android.support.design.widget.FloatingActionButton;
 //import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity
 
     //private StorageReference mStorageRef;
     // Search EditText
-    EditText inputSearch;
+
     // Listview Adapter
     ArrayAdapter<String> arrayAdapter;
 
@@ -166,27 +170,6 @@ public class MainActivity extends AppCompatActivity
             // Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
         }
                     //}
-        inputSearch = (EditText) findViewById(R.id.inputSearch);
-        inputSearch.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                // When user changed the Text
-                MainActivity.this.arrayAdapter.getFilter().filter(cs);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -210,26 +193,42 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
+
+@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
         }
 
-        return super.onOptionsItemSelected(item);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                MainActivity.this.arrayAdapter.getFilter().filter(newText);
+
+                return false;
+            }
+        });
+
+        searchView.setQueryHint("Search Trees...");
+        return super.onCreateOptionsMenu(menu);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

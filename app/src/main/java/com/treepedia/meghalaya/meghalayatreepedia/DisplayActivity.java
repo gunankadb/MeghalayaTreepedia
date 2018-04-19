@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -154,10 +155,55 @@ public class DisplayActivity extends AppCompatActivity {
         pDialog.setMessage("Downloading images...");
         pDialog.show();
 
+
+
+        String json = null;
+        try {
+
+            InputStream is = this.getAssets().open("TreeImages.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            Log.i("tag1",json);
+
+        JSONArray jsonArr = new JSONArray(json);
+
+        for (int i = 0; i <  jsonArr.length(); i++) {
+            final String Imageurl = TREE_IMAGES_URL[0] + ImageID + TREE_IMAGES_URL[1] + "i" + (i + 1) + TREE_IMAGES_URL[2] + firebase_access_token;
+            JSONObject object = jsonArr.getJSONObject(i);
+
+            Image image = new Image();
+            if (Synonym.equals("NA")) {
+                image.setName(BN);
+            } else {
+                image.setName(BN + " or " + Synonym);
+            }
+
+            JSONObject url = object.getJSONObject("url");
+            image.setSmall(Imageurl);
+            image.setMedium(Imageurl);
+            image.setLarge(Imageurl);
+            image.setTimestamp(CN);
+
+            images.add(image);
+
+        }
+                 } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        mAdapter.notifyDataSetChanged();
+
+
+
         JsonArrayRequest req = new JsonArrayRequest(endpoint,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+
+
                         Log.d(TAG, response.toString());
                         pDialog.hide();
 
@@ -187,16 +233,20 @@ public class DisplayActivity extends AppCompatActivity {
                         }
 
                         mAdapter.notifyDataSetChanged();
+
+
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error: " + error.getMessage());
+
                 pDialog.hide();
             }
         });
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(req);
+
     }
 }
 
